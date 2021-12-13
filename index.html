@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<title>Currency Converter</title>
+</head>
+<body>
+	<div id="container">
+		<p id="heading">Currency Converter</p>
+		<input type="number" id="number" placeholder="Input">
+		<br />
+		<select id="select1"></select>
+		<br />
+		<input type="number" id="output" placeholder="Output">
+		<br/>
+		<select id="select2"></select><br />
+		<button id="conv">Convert</button>
+	</div>
+	<script>
+onload = function (){
+
+fetch('https://api.frankfurter.app/currencies').then((data) => data.json())
+  .then((data) => {
+	display(data);
+  });
+
+function display(data) {
+var entries = Object.entries(data);
+for (i = 0; i < entries.length; i++) {
+	select1.innerHTML += `<option value="${entries[i][0]}">${entries[i][0]} : ${entries[i][1]}</option>`;
+	select2.innerHTML += `<option value="${entries[i][0]}">${entries[i][0]} : ${entries[i][1]}</option>`;
+}
+}
+
+conv.addEventListener("click", updatevalue);
+
+function updatevalue() {
+let currency1 = select1.value;
+let currency2 = select2.value;
+let value = number.value;
+
+if (currency1 != currency2) {
+	convert(currency1, currency2, value);
+} 
+else {
+	alert("Choose Diffrent Currency");
+}
+}
+
+
+function convert(currency1, currency2, value) {
+
+fetch(`https://api.frankfurter.app/latest?amount=${value}&from=${currency1}&to=${currency2}`)
+.then((val) => val.json())
+.then((val) => {
+
+	  output.value = Object.values(val.rates)[0];
+	  output.style.background = 'goldenrod';
+	output.style.opacity = '1';
+	});
+}
+}
+	</script>
+</body>
+</html>
